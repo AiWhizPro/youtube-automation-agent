@@ -328,10 +328,16 @@ class SystemTest {
         throw new Error('Operator dashboard API did not return its data contract');
       }
       const unavailableStart = await fetch(`http://127.0.0.1:${port}/api/operator/start`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: '{}'
-      });
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': process.env.API_KEY || ''
+  },
+  body: '{}'
+});
+
+
+
       if (unavailableStart.status !== 503) {
         throw new Error('Autonomous operator did not fail closed when its strategy agent was unavailable');
       }
@@ -345,10 +351,17 @@ class SystemTest {
         proposedChange: { target: 'future_plans', prefer: 'tutorial' },
         confidence: 'medium'
       });
-      const approveLearning = await fetch(
-        `http://127.0.0.1:${port}/api/learning/recommendations/${learningRecommendation.id}/approve`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }
-      );
+     const approveLearning = await fetch(
+  `http://127.0.0.1:${port}/api/learning/recommendations/${learningRecommendation.id}/approve`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.API_KEY || ''
+    },
+    body: '{}'
+  }
+);
       const approvedLearning = await approveLearning.json();
       if (!approveLearning.ok || approvedLearning.result?.status !== 'approved') {
         throw new Error('Learning recommendation review API did not persist approval');
